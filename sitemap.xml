@@ -1,5 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://deltaarmada.github.io/TrueWAP/404.html</loc></url>
+<url><loc>https://deltaarmada.github.io/TrueWAP/articles/TrueWAP.html</loc></url>
+<url><loc>https://deltaarmada.github.io/TrueWAP/articles/index.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/authors.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/index.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/TWAP.html</loc></url>
@@ -8,7 +10,6 @@
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/anchoredTWAP.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/anchoredTrueWAP.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/anchoredVWAP.html</loc></url>
-<url><loc>https://deltaarmada.github.io/TrueWAP/reference/hello.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/index.html</loc></url>
 <url><loc>https://deltaarmada.github.io/TrueWAP/reference/nikkei.html</loc></url>
 </urlset>
