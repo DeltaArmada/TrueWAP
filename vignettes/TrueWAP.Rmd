@@ -1,0 +1,69 @@
+---
+title: "Introducing TrueWAP: A Volatility-Weighted Price Averaging Tool"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TrueWAP}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The TrueRange-Weighted Average Price (TrueWAP) is an indicator that directly integrates volatility into price averaging by weighting median range-bound prices using the True Range. Unlike conventional metrics such as TWAP (Time-Weighted Average Price), which focuses solely on time, or VWAP (Volume-Weighted Average Price), which emphasizes volume, TrueWAP captures fluctuating market behavior by reflecting true price movement within high/low performance boundaries.
+
+Two implementations are detailed below.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Load library and data
+
+```{r setup}
+library(TrueWAP)
+
+data(nikkei)
+```
+
+# Create Indicators
+
+```{r indicators}
+twap <- TWAP(nikkei$OHLC, 50)
+vwap <- VWAP(nikkei$HLC3, nikkei$Volume, 50)
+true_wap <- TrueWAP(high = nikkei$High, low = nikkei$Low, close = nikkei$Close, true_range = nikkei$tr, period = 50)
+
+twap_anchored <- anchoredTWAP(OHLC = nikkei$OHLC, period = nikkei$bars_since_segment)
+vwap_anchored <- anchoredVWAP(HLC3 = nikkei$HLC3, volume = nikkei$Volume, period = nikkei$bars_since_segment)
+true_wap_anchored <- anchoredTrueWAP(high = nikkei$High, low = nikkei$Low, close = nikkei$Close, true_range = nikkei$tr, period = nikkei$bars_since_segment)
+```
+
+# Rolling TrueWAP
+
+Overview: Calculated over a predetermined span (e.g., 50 bars), this version continuously updates its value using a “contextual midpoint” derived from both the previous close and the current bar’s high and low. This midpoint, referred to as the True Range midpoint, ensures that the latest volatility is fully incorporated into the averaged range-bound price.
+
+Interpretation: For each bar, the rolling TrueWAP identifies the upper boundary as the maximum of the
+previous close and the current high, and the lower boundary as the minimum of the previous close and
+the current low. Their average produces a “contextual midpoint” that is then weighted by the bar’s True
+Range (a measure of volatility). By summing these values over a fixed number of bars (50, in this example)
+and normalizing by the total True Range, the indicator dynamically reflects both price levels and recent
+market volatility.
+
+
+# Anchored TrueWAP
+
+Overview: This version begins at the open of the first bar in a defined period, anchoring the calculation from that point forward. Since no previous data exist for the initial bar, its own high/low values serve as the baseline. For subsequent bars, the calculation uses the previous close from within the period to compute subsequent True Range values. This method ensures that the measure reflects solely the actual observed range from the period’s inception.
+
+Interpretation: The anchored TrueWAP begins at the open of the defined period. On the first bar, due to the absence of prior data, the indicator uses the simple average of that bar’s high and low (hilo_mid) and calculates its range as (High-Low). For every subsequent bar, it adopts the “True Mid” and True Range calculated using data from the previous close within the period. This differentiation ensures that the indicator remains solely reflective of the period’s actual price movements and volatility.
+
+# A Note on True Range
+
+For clarity, the True Range is determined as the maximum of the following:
+• The current high minus the current low,
+• The absolute value of the current high minus the previous close,
+• The absolute value of the current low minus the previous close.
+This measure provides a clear, objective assessment of recent market volatility
+
+# Conclusion
+
+TrueWAP enhances traditional price averaging by incorporating both price levels and volatility measures. By reflecting a central price (via the contextual midpoint) and scaling it according to fluctuations (through the True Range), TrueWAP offers traders and analysts a nuanced view of market dynamics—especially under volatile conditions—complementing tools that focus solely on time or volume.
